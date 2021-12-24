@@ -1,5 +1,6 @@
 mod tuple;
 mod canvas;
+mod matrix;
 
 fn main() {
   let mut c = canvas::canvas(10, 2);
