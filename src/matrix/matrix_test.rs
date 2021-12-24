@@ -17,3 +17,29 @@ fn test_create_matrix4() {
   assert_eq!(m.values[3][0], 13.5);
   assert_eq!(m.values[3][2], 15.5);
 }
+
+#[test]
+fn test_create_matrix2() {
+  let values = vec!(-3.0, 5.0,
+    1.0, -2.0
+  );
+  let m = create_matrix2_by_rows(values);
+
+  assert_eq!(m.values[0][0], -3.0);
+  assert_eq!(m.values[0][1], 5.0);
+  assert_eq!(m.values[1][0], 1.0);
+  assert_eq!(m.values[1][1], -2.0);
+}
+
+#[test]
+fn test_create_matrix3() {
+  let values = vec!(-3.0, 5.0, 0.0,
+    1.0, -2.0, -7.0,
+    0.0, 1.0, 1.0
+  );
+  let m = create_matrix3_by_rows(values);
+
+  assert_eq!(m.values[0][0], -3.0);
+  assert_eq!(m.values[1][1], -2.0);
+  assert_eq!(m.values[2][2], 1.0);
+}
