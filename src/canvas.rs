@@ -49,7 +49,15 @@ fn process_color(color: u8, mut current_row: String, rows: &mut Vec<String>) -> 
     rows.push(current_row);
     current_row = format!("{}", color);
   }
-  if current_row.len() == 69 {
+  return current_row;
+}
+
+fn add_separator(mut current_row: String, rows: &mut Vec<String>, px_index: usize, width: usize, after_blue: bool) -> String {
+  if after_blue && (px_index + 1) % width == 0 {
+    current_row = format!("{}\n", current_row);
+    rows.push(current_row);
+    current_row = String::from("");
+  } else if current_row.len() == 69 {
     current_row = format!("{}\n", current_row);
     rows.push(current_row);
     current_row = String::from("");
@@ -58,13 +66,6 @@ fn process_color(color: u8, mut current_row: String, rows: &mut Vec<String>) -> 
   }
   return current_row;
 }
-
-// fn color_string_length(color: &Tuple) -> usize {
-//   return number_string_length(color.x)
-//    + number_string_length(color.y)
-//    + number_string_length(color.x)
-//    + 3;
-// }
 
 // canvas impl
 
@@ -87,56 +88,21 @@ impl Canvas {
     let mut current_row = String::from("");
     for i in 0..(self.width * self.height) {
       let current_color = &self.pixels.get(i).unwrap();
-      // let total_color_length = color_string_length(current_color);
       let red = scale_color(current_color.x);
       let green = scale_color(current_color.y);
       let blue = scale_color(current_color.z);
 
-      if current_row.len() + number_string_length(red) < 70 {
-        current_row = format!("{}{}", current_row, red);
-      } else {
-        current_row = format!("{}\n", current_row);
-        rows.push(current_row);
-        current_row = format!("{}", red);
-      }
-      if current_row.len() == 69 {
-        current_row = format!("{}\n", current_row);
-        rows.push(current_row);
-        current_row = String::from("");
-      } else {
-        current_row = format!("{} ", current_row);
-      }
+      current_row = process_color(red, current_row, &mut rows);
+      current_row = add_separator(current_row, &mut rows, i, self.width, false);
       println!("current_row nach red: {}", current_row);
 
-
-      if current_row.len() + number_string_length(green) < 70 {
-        current_row = format!("{}{}", current_row, green);
-      }
-      if current_row.len() == 69 {
-        current_row = format!("{}\n", current_row);
-        rows.push(current_row);
-        current_row = String::from("");
-      } else {
-        current_row = format!("{} ", current_row);
-      }
+      current_row = process_color(green, current_row, &mut rows);
+      current_row = add_separator(current_row, &mut rows, i, self.width, false);
       println!("current_row nach green: {}", current_row);
-      if current_row.len() + number_string_length(blue) < 70 {
-        current_row = format!("{}{}", current_row, blue);
-      }
-      
-      println!("current_row nach blue: {}", current_row);
-      if (i + 1) % self.width == 0 {
-        current_row = format!("{}\n", current_row);
-        rows.push(current_row);
-        current_row = String::from("");
-      } else if current_row.len() == 69 {
-        current_row = format!("{}\n", current_row);
-        rows.push(current_row);
-        current_row = String::from("");
-      } else {
-        current_row = format!("{} ", current_row);
-      }
 
+      current_row = process_color(blue, current_row, &mut rows);
+      current_row = add_separator(current_row, &mut rows, i, self.width, true);
+      println!("current_row nach blue: {}", current_row);
     }
     let mut data = String::from("");
     for row in rows {
