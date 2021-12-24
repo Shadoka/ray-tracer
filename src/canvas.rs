@@ -1,6 +1,10 @@
 use crate::tuple::Tuple;
 use crate::tuple::color;
 
+use std::fs::File;
+use std::io::prelude::*;
+use std::path::Path;
+
 pub struct Canvas {
   pixels: Vec<Tuple>,
   width: usize,
@@ -81,7 +85,7 @@ impl Canvas {
   }
 
   pub fn create_ppm_header(&self) -> String {
-    return String::from(format!("P3\n{:?} {:?}\n255", self.width, self.height));
+    return String::from(format!("P3\n{} {}\n255", self.width, self.height));
   }
 
   pub fn create_ppm_data(&self) -> String {
@@ -107,6 +111,25 @@ impl Canvas {
       data = format!("{}{}", data, row);
     }
     return data
+  }
+
+  pub fn write_file(&self, location: &str) {
+    let header = self.create_ppm_header();
+    let data = self.create_ppm_data();
+    let file_content = format!("{}\n{}", header, data);
+
+    let path = Path::new(location);
+    let display = path.display();
+
+    let mut file = match File::create(path) {
+      Err(why) => panic!("couldn't create {}: {}", display, why),
+      Ok(file) => file
+    };
+
+    match file.write_all(file_content.as_bytes()) {
+      Err(why) => panic!("couldn't write to {}: {}", display, why),
+      Ok(_) => ()
+    };
   }
 }
 
