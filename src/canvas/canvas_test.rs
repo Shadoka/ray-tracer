@@ -44,6 +44,25 @@ fn test_create_ppm_data() {
 }
 
 #[test]
+fn test_create_ppm_data2() {
+  let mut c = canvas(10, 2);
+  let color = color(1.0, 0.8, 0.6);
+  for x in 0..10 {
+    for y in 0..2 {
+      c.write_pixel(color, x, y);
+    }
+  }
+
+  let expected = r#"255 204 153 255 204 153 255 204 153 255 204 153 255 204 153 255 204
+153 255 204 153 255 204 153 255 204 153 255 204 153
+255 204 153 255 204 153 255 204 153 255 204 153 255 204 153 255 204
+153 255 204 153 255 204 153 255 204 153 255 204 153
+"#;
+
+  assert_eq!(c.create_ppm_data(), expected);
+}
+
+#[test]
 fn test_format() {
   let mut s = String::from("");
   s = format!("{}{}", s, 255);

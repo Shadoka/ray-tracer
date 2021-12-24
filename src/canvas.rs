@@ -45,6 +45,7 @@ fn process_color(color: u8, mut current_row: String, rows: &mut Vec<String>) -> 
   if current_row.len() + number_string_length(color) < 70 {
     current_row = format!("{}{}", current_row, color);
   } else {
+    current_row.pop();
     current_row = format!("{}\n", current_row);
     rows.push(current_row);
     current_row = format!("{}", color);
@@ -61,7 +62,7 @@ fn add_separator(mut current_row: String, rows: &mut Vec<String>, px_index: usiz
     current_row = format!("{}\n", current_row);
     rows.push(current_row);
     current_row = String::from("");
-  } else {
+  } else if current_row.len() != 0 {
     current_row = format!("{} ", current_row);
   }
   return current_row;
@@ -94,15 +95,12 @@ impl Canvas {
 
       current_row = process_color(red, current_row, &mut rows);
       current_row = add_separator(current_row, &mut rows, i, self.width, false);
-      println!("current_row nach red: {}", current_row);
 
       current_row = process_color(green, current_row, &mut rows);
       current_row = add_separator(current_row, &mut rows, i, self.width, false);
-      println!("current_row nach green: {}", current_row);
 
       current_row = process_color(blue, current_row, &mut rows);
       current_row = add_separator(current_row, &mut rows, i, self.width, true);
-      println!("current_row nach blue: {}", current_row);
     }
     let mut data = String::from("");
     for row in rows {
