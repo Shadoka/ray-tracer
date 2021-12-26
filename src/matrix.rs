@@ -2,17 +2,17 @@ use crate::tuple::Tuple;
 
 use std::ops;
 
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone)]
 pub struct Matrix2 {
   pub values: [[f64; 2]; 2]
 }
 
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone)]
 pub struct Matrix3 {
   pub values: [[f64; 3]; 3]
 }
 
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone)]
 pub struct Matrix4 {
   pub values: [[f64; 4]; 4]
 }
@@ -169,6 +169,60 @@ pub fn matrix4(values: &Vec<f64>) -> Matrix4 {
   return Matrix4{values: m_values};
 }
 
+pub fn translation(x: f64, y: f64, z: f64) -> Matrix4 {
+  let mut tm = IDENTITY.clone();
+  tm.values[0][3] = x;
+  tm.values[1][3] = y;
+  tm.values[2][3] = z;
+  return tm;
+}
+
+pub fn scaling(x: f64, y: f64, z: f64) -> Matrix4 {
+  let mut sm = IDENTITY.clone();
+  sm.values[0][0] = x;
+  sm.values[1][1] = y;
+  sm.values[2][2] = z;
+  return sm;
+}
+
+pub fn rotation_x(radians: f64) -> Matrix4 {
+  let mut rotation_x = IDENTITY.clone();
+  rotation_x.values[1][1] = radians.cos();
+  rotation_x.values[1][2] = -(radians.sin());
+  rotation_x.values[2][1] = radians.sin();
+  rotation_x.values[2][2] = radians.cos();
+  return rotation_x;
+}
+
+pub fn rotation_y(radians: f64) -> Matrix4 {
+  let mut rotation = IDENTITY.clone();
+  rotation.values[0][0] = radians.cos();
+  rotation.values[0][2] = radians.sin();
+  rotation.values[2][0] = -(radians.sin());
+  rotation.values[2][2] = radians.cos();
+  return rotation;
+}
+
+pub fn rotation_z(radians: f64) -> Matrix4 {
+  let mut rotation = IDENTITY.clone();
+  rotation.values[0][0] = radians.cos();
+  rotation.values[0][1] = -(radians.sin());
+  rotation.values[1][0] = radians.sin();
+  rotation.values[1][1] = radians.cos();
+  return rotation;
+}
+
+pub fn shearing(xy: f64, xz: f64, yx: f64, yz: f64, zx: f64, zy: f64) -> Matrix4 {
+  let mut shear_matrix = IDENTITY.clone();
+  shear_matrix.values[0][1] = xy;
+  shear_matrix.values[0][2] = xz;
+  shear_matrix.values[1][0] = yx;
+  shear_matrix.values[1][2] = yz;
+  shear_matrix.values[2][0] = zx;
+  shear_matrix.values[2][1] = zy;
+  return shear_matrix;
+}
+
 impl Matrix2 {
   pub fn det(&self) -> f64 {
     return self.values[0][0] * self.values[1][1]
@@ -289,6 +343,36 @@ impl Matrix4 {
       }
     }
     return matrix4(&values);
+  }
+
+  pub fn translate(&self, x: f64, y: f64, z: f64) -> Matrix4 {
+    let translation = translation(x, y, z);
+    return &translation * &self;
+  }
+
+  pub fn scale(&self, x: f64, y: f64, z: f64) -> Matrix4 {
+    let scaling = scaling(x, y, z);
+    return &scaling * &self;
+  }
+
+  pub fn rotate_x(&self, radians: f64) -> Matrix4 {
+    let rotation = rotation_x(radians);
+    return &rotation * &self;
+  }
+
+  pub fn rotate_y(&self, radians: f64) -> Matrix4 {
+    let rotation = rotation_y(radians);
+    return &rotation * &self;
+  }
+
+  pub fn rotate_z(&self, radians: f64) -> Matrix4 {
+    let rotation = rotation_z(radians);
+    return &rotation * &self;
+  }
+
+  pub fn shear(&self, xy: f64, xz: f64, yx: f64, yz: f64, zx: f64, zy: f64) -> Matrix4 {
+    let shear_m = shearing(xy, xz, yx, yz, zx, zy);
+    return &shear_m * &self;
   }
 }
 

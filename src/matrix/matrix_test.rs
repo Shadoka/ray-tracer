@@ -1,4 +1,7 @@
+use crate::tuple;
+
 use super::*;
+use std::f64::consts::PI;
 
 #[test]
 fn test_create_matrix4() {
@@ -8,7 +11,7 @@ fn test_create_matrix4() {
     13.5, 14.5, 15.5, 16.5
   );
   let m = matrix4(&values);
-
+  
   assert_eq!(m.values[0][0], 1.0);
   assert_eq!(m.values[0][3], 4.0);
   assert_eq!(m.values[1][0], 5.5);
@@ -379,6 +382,219 @@ fn test_matrix4_inverse_mul() {
   assert_eq!(m3 * m2.inverse(), m);
 }
 
+#[test]
+fn test_translate() {
+  let p = tuple::point(-3.0, 4.0, 5.0);
+  let tm = translation(5.0, -3.0, 2.0);
+
+  let expected = tuple::point(2.0, 1.0, 7.0);
+
+  assert_eq!(tm * p, expected);
+}
+
+#[test]
+fn test_translate_inverse() {
+  let p = tuple::point(-3.0, 4.0, 5.0);
+  let tm = translation(5.0, -3.0, 2.0);
+  let inv = tm.inverse();
+
+  let expected = tuple::point(-8.0, 7.0, 3.0);
+
+  assert_eq!(inv * p, expected);
+}
+
+#[test]
+fn test_translate_vector() {
+  let tm = translation(5.0, -3.0, 2.0);
+  let v = tuple::vector(-3.0, 4.0, 5.0);
+
+  assert_eq!(tm * v, v);
+}
+
+#[test]
+fn test_scale_point() {
+  let sm = scaling(2.0, 3.0, 4.0);
+  let p = tuple::point(-4.0, 6.0, 8.0);
+
+  let expected = tuple::point(-8.0, 18.0, 32.0);
+
+  assert_eq!(sm * p, expected);
+}
+
+#[test]
+fn test_scale_vector() {
+  let sm = scaling(2.0, 3.0, 4.0);
+  let p = tuple::vector(-4.0, 6.0, 8.0);
+
+  let expected = tuple::vector(-8.0, 18.0, 32.0);
+
+  assert_eq!(sm * p, expected);
+}
+
+#[test]
+fn test_scale_inverse() {
+  let sm = scaling(2.0, 3.0, 4.0);
+  let p = tuple::vector(-4.0, 6.0, 8.0);
+  let inv = sm.inverse();
+
+  let expected = tuple::vector(-2.0, 2.0, 2.0);
+
+  assert_eq!(inv * p, expected);
+}
+
+#[test]
+fn test_reflect_x_axis() {
+  let sm = scaling(-1.0, 1.0, 1.0);
+  let p = tuple::point(2.0, 3.0, 4.0);
+
+  let expected = tuple::point(-2.0, 3.0, 4.0);
+
+  assert_eq!(sm * p, expected);
+}
+
+#[test]
+fn test_rotation_x() {
+  let p = tuple::point(0.0, 1.0, 0.0);
+  let half_quarter = rotation_x(PI / 4.0);
+  let full_quarter = rotation_x(PI / 2.0);
+
+  let expected_hq = tuple::point(0.0, (2.0f64).sqrt() / 2.0, (2.0f64).sqrt() / 2.0);
+  let expected_fq = tuple::point(0.0, 0.0, 1.0);
+
+  assert_eq!(half_quarter * p, expected_hq);
+  assert_eq!(full_quarter * p, expected_fq);
+}
+
+#[test]
+fn test_rotation_x_inverse() {
+  let p = tuple::point(0.0, 1.0, 0.0);
+  let half_quarter = rotation_x(PI / 4.0);
+  let inverse_hq = half_quarter.inverse();
+
+  let expected_hq = tuple::point(0.0, (2.0f64).sqrt() / 2.0, -((2.0f64).sqrt() / 2.0));
+
+  assert_eq!(inverse_hq * p, expected_hq);
+}
+
+#[test]
+fn test_rotation_y() {
+  let p = tuple::point(0.0, 0.0, 1.0);
+  let half_quarter = rotation_y(PI / 4.0);
+  let full_quarter = rotation_y(PI / 2.0);
+
+  let expected_hq = tuple::point((2.0f64).sqrt() / 2.0, 0.0, (2.0f64).sqrt() / 2.0);
+  let expected_fq = tuple::point(1.0, 0.0, 0.0);
+
+  assert_eq!(half_quarter * p, expected_hq);
+  assert_eq!(full_quarter * p, expected_fq);
+}
+
+#[test]
+fn test_rotation_z() {
+  let p = tuple::point(0.0, 1.0, 0.0);
+  let half_quarter = rotation_z(PI / 4.0);
+  let full_quarter = rotation_z(PI / 2.0);
+
+  let expected_hq = tuple::point(-((2.0f64).sqrt() / 2.0), (2.0f64).sqrt() / 2.0, 0.0);
+  let expected_fq = tuple::point(-1.0, 0.0, 0.0);
+
+  assert_eq!(half_quarter * p, expected_hq);
+  assert_eq!(full_quarter * p, expected_fq);
+}
+
+#[test]
+fn test_shear_xy() {
+  let p = tuple::point(2.0, 3.0, 4.0);
+  let transform = shearing(1.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+
+  let expected = tuple::point(5.0, 3.0, 4.0);
+
+  assert_eq!(transform * p, expected);
+}
+
+#[test]
+fn test_shear_zy() {
+  let p = tuple::point(2.0, 3.0, 4.0);
+  let transform = shearing(0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+
+  let expected = tuple::point(2.0, 3.0, 7.0);
+
+  assert_eq!(transform * p, expected);
+}
+
+#[test]
+fn test_shear_xz() {
+  let p = tuple::point(2.0, 3.0, 4.0);
+  let transform = shearing(0.0, 1.0, 0.0, 0.0, 0.0, 0.0);
+
+  let expected = tuple::point(6.0, 3.0, 4.0);
+
+  assert_eq!(transform * p, expected);
+}
+
+#[test]
+fn test_shear_yx() {
+  let p = tuple::point(2.0, 3.0, 4.0);
+  let transform = shearing(0.0, 0.0, 1.0, 0.0, 0.0, 0.0);
+
+  let expected = tuple::point(2.0, 5.0, 4.0);
+
+  assert_eq!(transform * p, expected);
+}
+
+#[test]
+fn test_shear_yz() {
+  let p = tuple::point(2.0, 3.0, 4.0);
+  let transform = shearing(0.0, 0.0, 0.0, 1.0, 0.0, 0.0);
+
+  let expected = tuple::point(2.0, 7.0, 4.0);
+
+  assert_eq!(transform * p, expected);
+}
+
+#[test]
+fn test_shear_zx() {
+  let p = tuple::point(2.0, 3.0, 4.0);
+  let transform = shearing(0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+
+  let expected = tuple::point(2.0, 3.0, 6.0);
+
+  assert_eq!(transform * p, expected);
+}
+
+#[test]
+fn test_transformation_sequence() {
+  let p = tuple::point(1.0, 0.0, 1.0);
+  let rot = rotation_x(PI / 2.0);
+  let scaling = scaling(5.0, 5.0, 5.0);
+  let translation = translation(10.0, 5.0, 7.0);
+
+  let exp1 = tuple::point(1.0, -1.0, 0.0);
+  let exp2 = tuple::point(5.0, -5.0, 0.0);
+  let exp3 = tuple::point(15.0, 0.0, 7.0);
+
+  let result_rot = rot * p;
+  assert_eq!(result_rot, exp1);
+
+  let result_scaling = scaling * result_rot;
+  assert_eq!(result_scaling, exp2);
+
+  let result_translate = translation * result_scaling;
+  assert_eq!(result_translate, exp3);
+}
+
+#[test]
+fn test_transformation_chaining() {
+  let p = tuple::point(1.0, 0.0, 1.0);
+  let transformation = rotation_x(PI / 2.0)
+    .scale(5.0, 5.0, 5.0)
+    .translate(10.0, 5.0, 7.0);
+
+  let expected = tuple::point(15.0, 0.0, 7.0);
+
+  assert_eq!(transformation * p, expected);
+}
+
 fn equals_float(a: f64, b: f64) -> bool {
   return (a - b).abs() < 0.00001
-}
+} 
