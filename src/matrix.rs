@@ -253,9 +253,9 @@ impl Matrix3 {
   pub fn cofactor(&self, row: usize, column: usize) -> f64 {
     let minor = self.minor(row, column);
     if (row + column) % 2 == 0 {
-      return minor;
+      minor
     } else {
-      return -minor;
+      -minor
     }
   }
 
@@ -306,9 +306,9 @@ impl Matrix4 {
   pub fn cofactor(&self, row: usize, column: usize) -> f64 {
     let minor = self.minor(row, column);
     if (row + column) % 2 == 0 {
-      return minor;
+      minor
     } else {
-      return -minor;
+      -minor
     }
   }
 
