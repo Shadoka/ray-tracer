@@ -1,5 +1,7 @@
 use crate::tuple::{point, vector};
-use crate::sphere::sphere;
+use crate::sphere::{Sphere, sphere};
+use crate::intersection::{intersection};
+use crate::shape::Shape;
 
 use super::*;
 
@@ -35,10 +37,11 @@ fn test_intersect_sphere_twice() {
   let r = ray(&point(0.0, 0.0, -5.0), &vector(0.0, 0.0, 1.0));
   let s = sphere();
 
-  let expected = vec!(4.0, 6.0);
-
-  let result = r.intersect(&s);
-  assert_eq!(result.len(), expected.len());
-  assert_eq!(result[0], expected[0]);
-  assert_eq!(result[1], expected[1]);
+  let expected = intersection(vec!(4.0, 6.0), &s);
+  let result = s.intersect(&r);
+  assert_eq!(result.intersections.len(), expected.intersections.len());
+  assert_eq!(result.intersections[0], expected.intersections[0]);
+  assert_eq!(result.intersections[1], expected.intersections[1]);
+  assert_eq!(result.object.get_id(), expected.object.get_id());
+  // assert_eq!(&result.object, &expected.object);
 }
