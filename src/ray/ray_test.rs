@@ -1,7 +1,6 @@
 use crate::tuple::{point, vector};
-use crate::sphere::{Sphere, sphere};
+use crate::sphere::{Sphere};
 use crate::intersection::{intersection};
-use crate::shape::Shape;
 
 use super::*;
 
@@ -35,13 +34,70 @@ fn test_position() {
 #[test]
 fn test_intersect_sphere_twice() {
   let r = ray(&point(0.0, 0.0, -5.0), &vector(0.0, 0.0, 1.0));
-  let s = sphere();
+  let s = Sphere::shape();
 
-  let expected = intersection(vec!(4.0, 6.0), &s);
-  let result = s.intersect(&r);
-  assert_eq!(result.intersections.len(), expected.intersections.len());
-  assert_eq!(result.intersections[0], expected.intersections[0]);
-  assert_eq!(result.intersections[1], expected.intersections[1]);
-  assert_eq!(result.object.get_id(), expected.object.get_id());
+  let mut expected = Vec::new();
+  expected.push(intersection(4.0, &s));
+  expected.push(intersection(6.0, &s));
+  let result = r.intersect(&s);
+  assert_eq!(result.len(), expected.len());
+  assert_eq!(result[0].intersection_t, expected[0].intersection_t);
+  assert_eq!(result[1].intersection_t, expected[1].intersection_t);
+  assert_eq!(result[0].object.get_id(), expected[0].object.get_id());
   // assert_eq!(&result.object, &expected.object);
+}
+
+#[test]
+fn test_intersect_sphere_tangent() {
+  let r = ray(&point(0.0, 1.0, -5.0), &vector(0.0, 0.0, 1.0));
+  let s = Sphere::shape();
+
+  let mut expected = Vec::new();
+  expected.push(intersection(5.0, &s));
+  expected.push(intersection(5.0, &s));
+  let result = r.intersect(&s);
+  assert_eq!(result.len(), expected.len());
+  assert_eq!(result[0].intersection_t, expected[0].intersection_t);
+  assert_eq!(result[1].intersection_t, expected[1].intersection_t);
+  assert_eq!(result[0].object.get_id(), expected[0].object.get_id());
+}
+
+#[test]
+fn test_intersect_sphere_miss() {
+  let r = ray(&point(0.0, 2.0, -5.0), &vector(0.0, 0.0, 1.0));
+  let s = Sphere::shape();
+
+  let expected: Vec<Intersection> = Vec::new();
+  let result = r.intersect(&s);
+  assert_eq!(result.len(), expected.len());
+}
+
+#[test]
+fn test_intersect_sphere_inside() {
+  let r = ray(&point(0.0, 0.0, 0.0), &vector(0.0, 0.0, 1.0));
+  let s = Sphere::shape();
+
+  let mut expected = Vec::new();
+  expected.push(intersection(-1.0, &s));
+  expected.push(intersection(1.0, &s));
+  let result = r.intersect(&s);
+  assert_eq!(result.len(), expected.len());
+  assert_eq!(result[0].intersection_t, expected[0].intersection_t);
+  assert_eq!(result[1].intersection_t, expected[1].intersection_t);
+  assert_eq!(result[0].object.get_id(), expected[0].object.get_id());
+}
+
+#[test]
+fn test_intersect_sphere_behind() {
+  let r = ray(&point(0.0, 0.0, 5.0), &vector(0.0, 0.0, 1.0));
+  let s = Sphere::shape();
+
+  let mut expected = Vec::new();
+  expected.push(intersection(-6.0, &s));
+  expected.push(intersection(-4.0, &s));
+  let result = r.intersect(&s);
+  assert_eq!(result.len(), expected.len());
+  assert_eq!(result[0].intersection_t, expected[0].intersection_t);
+  assert_eq!(result[1].intersection_t, expected[1].intersection_t);
+  assert_eq!(result[0].object.get_id(), expected[0].object.get_id());
 }
