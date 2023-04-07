@@ -1,7 +1,8 @@
 use crate::intersection::{Intersection, intersection};
 use crate::shape::Shape;
 use crate::sphere::Sphere;
-use crate::tuple::{Tuple, point};
+use crate::tuple::{Tuple, point, vector};
+use crate::matrix::{Matrix4, TRANSLATION, SCALING};
 
 #[derive(Debug, Clone, Copy)]
 pub struct Ray {
@@ -43,6 +44,18 @@ impl Ray {
     }
 
     interscts
+  }
+
+  fn transform(&self, transformation: &Matrix4) -> Ray {
+    if transformation.kind == TRANSLATION {
+      let new_origin = transformation * self.origin;
+      return ray(&new_origin, &self.direction.clone());
+    } else if transformation.kind == SCALING {
+      let new_origin = transformation * self.origin;
+      let new_direction = transformation * self.direction;
+      return ray(&new_origin, &new_direction);
+    }
+    return *self;
   }
 }
 

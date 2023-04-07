@@ -1,6 +1,7 @@
 use crate::tuple::{point, vector};
 use crate::sphere::{Sphere};
 use crate::intersection::{intersection};
+use crate::matrix::{translation, scaling};
 
 use super::*;
 
@@ -100,4 +101,28 @@ fn test_intersect_sphere_behind() {
   assert_eq!(result[0].intersection_t, expected[0].intersection_t);
   assert_eq!(result[1].intersection_t, expected[1].intersection_t);
   assert_eq!(result[0].object.get_id(), expected[0].object.get_id());
+}
+
+#[test]
+fn test_translate_ray() {
+  let r = ray(&point(1., 2., 3.), &vector(0., 1., 0.));
+  let tm = translation(3.0, 4.0, 5.0);
+
+  let expected = ray(&point(4., 6., 8.), &vector(0., 1., 0.));
+  let result = r.transform(&tm);
+
+  assert_eq!(result.origin, expected.origin);
+  assert_eq!(result.direction, expected.direction);
+}
+
+#[test]
+fn test_scale_ray() {
+  let r = ray(&point(1., 2., 3.), &vector(0., 1., 0.));
+  let tm = scaling(2., 3., 4.);
+
+  let expected = ray(&point(2., 6., 12.), &vector(0., 3., 0.));
+  let result = r.transform(&tm);
+
+  assert_eq!(result.origin, expected.origin);
+  assert_eq!(result.direction, expected.direction);
 }

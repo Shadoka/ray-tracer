@@ -14,7 +14,8 @@ pub struct Matrix3 {
 
 #[derive(Debug, Copy, Clone)]
 pub struct Matrix4 {
-  pub values: [[f64; 4]; 4]
+  pub values: [[f64; 4]; 4],
+  pub kind: u8
 }
 
 // const
@@ -24,7 +25,14 @@ const IDENTITY: Matrix4 = Matrix4 {values: [
   [0.0, 1.0, 0.0, 0.0],
   [0.0, 0.0, 1.0, 0.0],
   [0.0, 0.0, 0.0, 1.0]
-  ]};
+  ],
+kind: VALUE};
+
+pub const VALUE:        u8 = 0;
+pub const TRANSLATION:  u8 = 1;
+pub const SCALING:      u8 = 2;
+pub const ROTATION:     u8 = 3;
+pub const SHEARING:     u8 = 4;
 
 // trait impls
 
@@ -114,6 +122,22 @@ impl ops::Mul<Tuple> for Matrix4 {
   }
 }
 
+impl ops::Mul<Tuple> for &Matrix4 {
+  type Output = Tuple;
+
+  fn mul(self, other: Tuple) -> Self::Output {
+    let mut values: Vec<f64> = Vec::new();
+    for i in 0..4 {
+      values.push(self.values[i][0] * other.x
+        + self.values[i][1] * other.y
+        + self.values[i][2] * other.z
+        + self.values[i][3] * other.w
+      );
+    }
+    return Tuple{x: values[0], y: values[1], z: values[2], w: values[3]};
+  }
+}
+
 // private static methods
 
 fn equals_float(a: f64, b: f64) -> bool {
@@ -166,7 +190,7 @@ pub fn matrix4(values: &Vec<f64>) -> Matrix4 {
     m_values[i/4][i%4] = values[i];
   }
 
-  return Matrix4{values: m_values};
+  return Matrix4{values: m_values, kind: VALUE};
 }
 
 pub fn translation(x: f64, y: f64, z: f64) -> Matrix4 {
@@ -174,6 +198,7 @@ pub fn translation(x: f64, y: f64, z: f64) -> Matrix4 {
   tm.values[0][3] = x;
   tm.values[1][3] = y;
   tm.values[2][3] = z;
+  tm.kind = TRANSLATION;
   return tm;
 }
 
@@ -182,16 +207,18 @@ pub fn scaling(x: f64, y: f64, z: f64) -> Matrix4 {
   sm.values[0][0] = x;
   sm.values[1][1] = y;
   sm.values[2][2] = z;
+  sm.kind = SCALING;
   return sm;
 }
 
 pub fn rotation_x(radians: f64) -> Matrix4 {
-  let mut rotation_x = IDENTITY.clone();
-  rotation_x.values[1][1] = radians.cos();
-  rotation_x.values[1][2] = -(radians.sin());
-  rotation_x.values[2][1] = radians.sin();
-  rotation_x.values[2][2] = radians.cos();
-  return rotation_x;
+  let mut rotation = IDENTITY.clone();
+  rotation.values[1][1] = radians.cos();
+  rotation.values[1][2] = -(radians.sin());
+  rotation.values[2][1] = radians.sin();
+  rotation.values[2][2] = radians.cos();
+  rotation.kind = ROTATION;
+  return rotation;
 }
 
 pub fn rotation_y(radians: f64) -> Matrix4 {
@@ -200,6 +227,7 @@ pub fn rotation_y(radians: f64) -> Matrix4 {
   rotation.values[0][2] = radians.sin();
   rotation.values[2][0] = -(radians.sin());
   rotation.values[2][2] = radians.cos();
+  rotation.kind = ROTATION;
   return rotation;
 }
 
@@ -209,6 +237,7 @@ pub fn rotation_z(radians: f64) -> Matrix4 {
   rotation.values[0][1] = -(radians.sin());
   rotation.values[1][0] = radians.sin();
   rotation.values[1][1] = radians.cos();
+  rotation.kind = ROTATION;
   return rotation;
 }
 
@@ -220,6 +249,7 @@ pub fn shearing(xy: f64, xz: f64, yx: f64, yz: f64, zx: f64, zy: f64) -> Matrix4
   shear_matrix.values[1][2] = yz;
   shear_matrix.values[2][0] = zx;
   shear_matrix.values[2][1] = zy;
+  shear_matrix.kind = SHEARING;
   return shear_matrix;
 }
 
@@ -347,32 +377,32 @@ impl Matrix4 {
 
   pub fn translate(&self, x: f64, y: f64, z: f64) -> Matrix4 {
     let translation = translation(x, y, z);
-    return &translation * &self;
+    return &translation * self;
   }
 
   pub fn scale(&self, x: f64, y: f64, z: f64) -> Matrix4 {
     let scaling = scaling(x, y, z);
-    return &scaling * &self;
+    return &scaling * self;
   }
 
   pub fn rotate_x(&self, radians: f64) -> Matrix4 {
     let rotation = rotation_x(radians);
-    return &rotation * &self;
+    return &rotation * self;
   }
 
   pub fn rotate_y(&self, radians: f64) -> Matrix4 {
     let rotation = rotation_y(radians);
-    return &rotation * &self;
+    return &rotation * self;
   }
 
   pub fn rotate_z(&self, radians: f64) -> Matrix4 {
     let rotation = rotation_z(radians);
-    return &rotation * &self;
+    return &rotation * self;
   }
 
   pub fn shear(&self, xy: f64, xz: f64, yx: f64, yz: f64, zx: f64, zy: f64) -> Matrix4 {
     let shear_m = shearing(xy, xz, yx, yz, zx, zy);
-    return &shear_m * &self;
+    return &shear_m * self;
   }
 }
 
