@@ -1,7 +1,7 @@
 use crate::intersection::{Intersection, intersection};
 use crate::shape::Shape;
 use crate::sphere::Sphere;
-use crate::tuple::{Tuple, point, vector};
+use crate::tuple::{Tuple, point};
 use crate::matrix::{Matrix4, TRANSLATION, SCALING};
 
 #[derive(Debug, Clone, Copy)]
@@ -27,10 +27,12 @@ impl Ray {
     }
   }
 
-  fn intersect_sphere<'a>(&self, sphere: &Sphere, shape: &'a Shape) -> Vec<Intersection<'a>> {
-    let sphere_to_ray = self.origin - point(0.0, 0.0, 0.0);
-    let a = self.direction.dot(&self.direction);
-    let b = 2.0 * (self.direction.dot(&sphere_to_ray));
+  fn intersect_sphere<'a>(&self, _sphere: &Sphere, shape: &'a Shape) -> Vec<Intersection<'a>> {
+    let transformed_ray = self.transform(&shape.get_transform().inverse());
+
+    let sphere_to_ray = transformed_ray.origin - point(0.0, 0.0, 0.0);
+    let a = transformed_ray.direction.dot(&transformed_ray.direction);
+    let b = 2.0 * (transformed_ray.direction.dot(&sphere_to_ray));
     let c = sphere_to_ray.dot(&sphere_to_ray) - 1.0;
 
     let discriminant = b * b - 4.0 * a * c;

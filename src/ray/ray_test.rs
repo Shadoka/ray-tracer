@@ -126,3 +126,47 @@ fn test_scale_ray() {
   assert_eq!(result.origin, expected.origin);
   assert_eq!(result.direction, expected.direction);
 }
+
+#[test]
+fn test_scale_ray2() {
+  let r = ray(&point(0., 0., -5.), &vector(0., 0., 1.));
+  let tm = scaling(2., 2., 2.);
+
+  let expected = ray(&point(0., 0., -10.), &vector(0., 0., 2.));
+  let result = r.transform(&tm);
+
+  assert_eq!(result.origin, expected.origin);
+  assert_eq!(result.direction, expected.direction);
+}
+
+#[test]
+fn test_intersect_scaled_sphere() {
+  let r = ray(&point(0.0, 0.0, -5.0), &vector(0.0, 0.0, 1.0));
+  let mut s = Sphere::shape();
+  s.set_transform(&scaling(2.0, 2.0, 2.0));
+
+  let result = r.intersect(&s);
+  let mut expected = Vec::new();
+  expected.push(intersection(3.0, &s));
+  expected.push(intersection(7.0, &s));
+
+  assert_eq!(result.len(), expected.len());
+  assert_eq!(result[0].intersection_t, expected[0].intersection_t);
+  assert_eq!(result[1].intersection_t, expected[1].intersection_t);
+}
+
+#[test]
+fn test_intersect_translated_sphere() {
+  let r = ray(&point(0.0, 0.0, -5.0), &vector(0.0, 0.0, 1.0));
+  let mut s = Sphere::shape();
+  s.set_transform(&translation(0.0, 0.0, 2.0));
+
+  let result = r.intersect(&s);
+  let mut expected = Vec::new();
+  expected.push(intersection(6.0, &s));
+  expected.push(intersection(8.0, &s));
+
+  assert_eq!(result.len(), expected.len());
+  assert_eq!(result[0].intersection_t, expected[0].intersection_t);
+  assert_eq!(result[1].intersection_t, expected[1].intersection_t);
+}

@@ -94,7 +94,7 @@ fn test_intersections_hit3() {
 
     match result {
         None => (),
-        Some(hit) => assert_eq!(true, false)
+        Some(_hit) => assert_eq!(true, false)
     }
 }
 

@@ -181,6 +181,10 @@ pub fn matrix3(values: &Vec<f64>) -> Matrix3 {
 }
 
 pub fn matrix4(values: &Vec<f64>) -> Matrix4 {
+  return matrix4_internal(values, VALUE);
+}
+
+fn matrix4_internal(values: &Vec<f64>, kind: u8) -> Matrix4 {
   if values.len() != 16 {
     panic!("Matrix4 needs 16 values to be created");
   }
@@ -190,7 +194,7 @@ pub fn matrix4(values: &Vec<f64>) -> Matrix4 {
     m_values[i/4][i%4] = values[i];
   }
 
-  return Matrix4{values: m_values, kind: VALUE};
+  return Matrix4{values: m_values, kind: kind};
 }
 
 pub fn translation(x: f64, y: f64, z: f64) -> Matrix4 {
@@ -251,6 +255,10 @@ pub fn shearing(xy: f64, xz: f64, yx: f64, yz: f64, zx: f64, zy: f64) -> Matrix4
   shear_matrix.values[2][1] = zy;
   shear_matrix.kind = SHEARING;
   return shear_matrix;
+}
+
+pub fn identity() -> Matrix4 {
+  return IDENTITY.clone();
 }
 
 impl Matrix2 {
@@ -372,7 +380,7 @@ impl Matrix4 {
         values.push(c / determinant);
       }
     }
-    return matrix4(&values);
+    return matrix4_internal(&values, self.kind);
   }
 
   pub fn translate(&self, x: f64, y: f64, z: f64) -> Matrix4 {
