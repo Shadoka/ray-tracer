@@ -21,3 +21,10 @@ Rust implementation of [The Ray Tracer Challenge](http://raytracerchallenge.com/
 15. Triangles
 16. Constructive Solid Geometry (CSG)
 17. Next Steps
+
+## Exercises
+
+### Chapter 5
+![Exercise 5](exercises/exercise_chapter5.png)
+
+Drawing of a sphere via ray-sphere intersections.

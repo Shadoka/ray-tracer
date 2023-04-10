@@ -26,7 +26,7 @@ const IDENTITY: Matrix4 = Matrix4 {values: [
   [0.0, 0.0, 1.0, 0.0],
   [0.0, 0.0, 0.0, 1.0]
   ],
-kind: VALUE};
+  kind: VALUE};
 
 pub const VALUE:        u8 = 0;
 pub const TRANSLATION:  u8 = 1;

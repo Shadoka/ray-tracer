@@ -52,7 +52,7 @@ impl <'a> Add<Intersection<'a>> for Intersections<'a> {
 
 // impl Intersections
 
-impl Intersections<'_> {
+impl <'a> Intersections<'_> {
     pub fn hit(&self) -> Option<&Intersection> {
         let mut nearest_intersection = f64::MAX;
         let mut result_index = 0;
@@ -66,6 +66,14 @@ impl Intersections<'_> {
             return Option::None;
         }
         return Option::Some(&self[result_index]);
+    }
+
+    pub fn convert_from_vector(xs: Vec<Intersection>) -> Intersections {
+        let mut result = Intersections{values: vec![]};
+        for index in 0..xs.len() {
+            result = result + xs[index].clone();
+        }
+        return result;
     }
 }
 
