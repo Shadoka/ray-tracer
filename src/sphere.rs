@@ -1,4 +1,5 @@
 use uuid::Uuid;
+use crate::material::{Material, material};
 use crate::shape::Shape;
 use crate::matrix::{Matrix4, identity};
 use crate::tuple::{point, Tuple};
@@ -6,15 +7,17 @@ use crate::tuple::{point, Tuple};
 #[derive(Clone)]
 pub struct Sphere {
   pub id: String,
-  pub transform: Matrix4
+  pub transform: Matrix4,
+  pub material: Material
 }
 
 // public static functions
 
 pub fn sphere() -> Sphere {
-  return Sphere{
+  return Sphere {
     id: Uuid::new_v4().to_string(),
-    transform: identity()
+    transform: identity(),
+    material: material()
   };
 }
 
@@ -29,6 +32,10 @@ impl Sphere {
 
   pub fn set_transform(&mut self, tm: &Matrix4) {
     self.transform = tm.clone();
+  }
+
+  pub fn set_material(&mut self, m: &Material) {
+    self.material = m.clone();
   }
 
   pub fn shape() -> Shape {

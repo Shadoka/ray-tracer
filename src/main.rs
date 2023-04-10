@@ -8,6 +8,8 @@ mod sphere;
 mod shape;
 mod intersection;
 mod exercise_chapter5;
+mod lights;
+mod material;
 
 struct A {
   text: String

@@ -73,3 +73,20 @@ pub fn test_normal_is_normalized() {
 
   assert_eq!(result, expected);
 }
+
+#[test]
+pub fn test_material_default() {
+  let s = sphere();
+
+  assert_eq!(s.material, material());
+}
+
+#[test]
+pub fn test_material_custom() {
+  let mut s = sphere();
+  let mut m = material();
+  m.ambient = 1.0;
+  s.set_material(&m);
+
+  assert_eq!(s.material, m);
+}
