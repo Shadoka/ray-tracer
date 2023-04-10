@@ -1,6 +1,7 @@
 use uuid::Uuid;
 use crate::shape::Shape;
 use crate::matrix::{Matrix4, identity};
+use crate::tuple::{point, Tuple};
 
 #[derive(Clone)]
 pub struct Sphere {
@@ -32,6 +33,14 @@ impl Sphere {
 
   pub fn shape() -> Shape {
     Shape::Sphere(sphere())
+  }
+
+  pub fn normal_at(&self, p: &Tuple) -> Tuple {
+    let object_point = self.transform.inverse() * p;
+    let object_normal = object_point - point(0.0, 0.0, 0.0);
+    let mut world_normal = self.transform.inverse().transpose() * object_normal;
+    world_normal.w = 0.0;
+    return world_normal.normalize();
   }
 }
 

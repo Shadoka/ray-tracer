@@ -68,6 +68,19 @@ impl ops::Sub for Tuple {
   }
 }
 
+impl ops::Sub for &Tuple {
+  type Output = Tuple;
+
+  fn sub(self, other: Self) -> Self::Output {
+    Tuple {
+      x: self.x - other.x,
+      y: self.y - other.y,
+      z: self.z - other.z,
+      w: self.w - other.w
+    }
+  }
+}
+
 impl ops::Neg for Tuple {
   type Output = Self;
 
@@ -81,6 +94,19 @@ impl ops::Mul<f64> for Tuple {
 
   fn mul(self, scalar: f64) -> Tuple {
     Self {
+      x: self.x * scalar,
+      y: self.y * scalar,
+      z: self.z * scalar,
+      w: self.w * scalar
+    }
+  }
+}
+
+impl ops::Mul<f64> for &Tuple {
+  type Output = Tuple;
+
+  fn mul(self, scalar: f64) -> Tuple {
+    Tuple {
       x: self.x * scalar,
       y: self.y * scalar,
       z: self.z * scalar,
@@ -165,6 +191,10 @@ impl Tuple {
       z: self.x * other.y - self.y * other.x,
       w: 0.0
     };
+  }
+
+  pub fn reflect(&self, normal: &Tuple) -> Tuple {
+    return self - &(normal * 2.0 * self.dot(normal));
   }
 }
 

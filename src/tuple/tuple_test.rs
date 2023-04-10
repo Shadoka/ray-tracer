@@ -226,3 +226,24 @@ fn test_color_mul_color() {
   let c2 = color(0.9, 1.0, 0.1);
   assert_eq!(c1 * c2, color(0.9, 0.2, 0.04));
 }
+
+#[test]
+fn test_reflect_plane() {
+  let v = vector(1.0, -1.0, 0.0);
+  let n = vector(0.0, 1.0, 0.0);
+  let expected = vector(1.0, 1.0, 0.0);
+  let result = v.reflect(&n);
+
+  assert_eq!(result, expected);
+}
+
+#[test]
+fn test_reflect_slanted() {
+  let v = vector(0.0, -1.0, 0.0);
+  let value = 2.0_f64.sqrt() / 2.0;
+  let n = vector(value, value, 0.0);
+  let expected = vector(1.0, 0.0, 0.0);
+  let result = v.reflect(&n);
+
+  assert_eq!(result, expected);
+}

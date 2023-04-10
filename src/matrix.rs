@@ -138,6 +138,22 @@ impl ops::Mul<Tuple> for &Matrix4 {
   }
 }
 
+impl ops::Mul<&Tuple> for Matrix4 {
+  type Output = Tuple;
+
+  fn mul(self, other: &Tuple) -> Self::Output {
+    let mut values: Vec<f64> = Vec::new();
+    for i in 0..4 {
+      values.push(self.values[i][0] * other.x
+        + self.values[i][1] * other.y
+        + self.values[i][2] * other.z
+        + self.values[i][3] * other.w
+      );
+    }
+    return Tuple{x: values[0], y: values[1], z: values[2], w: values[3]};
+  }
+}
+
 // private static methods
 
 fn equals_float(a: f64, b: f64) -> bool {
