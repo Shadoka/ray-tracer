@@ -1,6 +1,6 @@
 use crate::{tuple::{point, color}, canvas::canvas, sphere::Sphere, ray::ray, intersection::Intersections};
 
-pub fn drawCircle() {
+pub fn draw_circle() {
     let ray_origin = point(0.0, 0.0, -5.0);
     let wall_z = 10.0;
     let wall_size = 7.0;

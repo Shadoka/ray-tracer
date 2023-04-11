@@ -68,6 +68,19 @@ impl ops::Sub for Tuple {
   }
 }
 
+impl ops::Sub<&Tuple> for Tuple {
+  type Output = Self;
+
+  fn sub(self, other: &Tuple) -> Self {
+    Self {
+      x: self.x - other.x,
+      y: self.y - other.y,
+      z: self.z - other.z,
+      w: self.w - other.w
+    }
+  }
+}
+
 impl ops::Sub for &Tuple {
   type Output = Tuple;
 

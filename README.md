@@ -9,7 +9,7 @@ Rust implementation of [The Ray Tracer Challenge](http://raytracerchallenge.com/
 3. Matrices ✔
 4. Matrix Transformations ✔
 5. Ray-Sphere Intersections ✔
-6. Light and Shading
+6. Light and Shading ✔
 7. Making a Scene
 8. Shadows
 9. Planes
@@ -28,3 +28,9 @@ Rust implementation of [The Ray Tracer Challenge](http://raytracerchallenge.com/
 ![Exercise 5](exercises/exercise_chapter5.png)
 
 Drawing of a sphere via ray-sphere intersections.
+
+### Chapter 6
+![Exercise 6](exercises/exercise_chapter6.png)
+![Exercise 6 scaled](exercises/exercise_chapter6_scaled.png)
+
+Drawings of a sphere with lightning via phong shader.

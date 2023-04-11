@@ -1,4 +1,4 @@
-use exercise_chapter5::drawCircle;
+use exercise_chapter6::draw_circle;
 
 mod tuple;
 mod canvas;
@@ -8,8 +8,10 @@ mod sphere;
 mod shape;
 mod intersection;
 mod exercise_chapter5;
+mod exercise_chapter6;
 mod lights;
 mod material;
+mod phong_shader;
 
 struct A {
   text: String
@@ -50,5 +52,5 @@ fn main() {
   //}
   //c.write_file("/Users/tigro/tmp/test.ppm");
 
-  drawCircle();
+  draw_circle();
 }

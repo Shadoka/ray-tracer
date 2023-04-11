@@ -1,3 +1,4 @@
+use crate::material::Material;
 use crate::sphere::Sphere;
 use crate::matrix::Matrix4;
 use crate::tuple::Tuple;
@@ -29,6 +30,18 @@ impl Shape {
     pub fn normal_at(&self, p: &Tuple) -> Tuple {
         match self {
             Shape::Sphere(s) => s.normal_at(p)
+        }
+    }
+
+    pub fn get_material(&self) -> &Material {
+        match self {
+            Shape::Sphere(s) => &s.material
+        }
+    }
+
+    pub fn set_material(&mut self, m: &Material) {
+        match self {
+            Shape::Sphere(s) => s.set_material(m)
         }
     }
 }
