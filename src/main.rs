@@ -12,6 +12,7 @@ mod exercise_chapter6;
 mod lights;
 mod material;
 mod phong_shader;
+mod world;
 
 struct A {
   text: String

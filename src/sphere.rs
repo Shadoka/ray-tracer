@@ -4,7 +4,7 @@ use crate::shape::Shape;
 use crate::matrix::{Matrix4, identity};
 use crate::tuple::{point, Tuple};
 
-#[derive(Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct Sphere {
   pub id: String,
   pub transform: Matrix4,

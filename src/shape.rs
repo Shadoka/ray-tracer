@@ -3,7 +3,7 @@ use crate::sphere::Sphere;
 use crate::matrix::Matrix4;
 use crate::tuple::Tuple;
 
-#[derive(Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum Shape {
     Sphere(Sphere)
 }
