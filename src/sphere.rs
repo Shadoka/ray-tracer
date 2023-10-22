@@ -4,7 +4,7 @@ use crate::shape::Shape;
 use crate::matrix::{Matrix4, identity};
 use crate::tuple::{point, Tuple};
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone)]
 pub struct Sphere {
   pub id: String,
   pub transform: Matrix4,
@@ -21,6 +21,17 @@ pub fn sphere() -> Sphere {
   };
 }
 
+// trait impls
+
+impl PartialEq for Sphere {
+  fn eq(&self, other: &Self) -> bool {
+      return self.get_transform() == other.get_transform()
+      && self.get_material() == other.get_material()
+  }
+}
+
+// object functions
+
 impl Sphere {
   pub fn get_id(&self) -> &String {
     &self.id
@@ -36,6 +47,10 @@ impl Sphere {
 
   pub fn set_material(&mut self, m: &Material) {
     self.material = m.clone();
+  }
+
+  pub fn get_material(&self) -> &Material {
+    &self.material
   }
 
   pub fn shape() -> Shape {
