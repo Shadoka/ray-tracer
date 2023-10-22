@@ -1,5 +1,5 @@
-use crate::shape::Shape;
-
+use crate::{shape::Shape, ray::Ray};
+use crate::tuple::Tuple;
 use std::ops::{Index, Add};
 
 #[derive(Clone)]
@@ -11,6 +11,14 @@ pub struct Intersection<'a> {
 #[derive(Clone)]
 pub struct Intersections<'a> {
     values: Vec<Intersection<'a>>
+}
+
+pub struct IntersectionComputationData {
+    pub t: f64,
+    pub object: Shape,
+    pub point: Tuple,
+    pub eyev: Tuple,
+    pub normalv: Tuple
 }
 
 pub fn intersection(intersection: f64, o: &Shape) -> Intersection {
@@ -78,6 +86,18 @@ impl <'a> Intersections<'_> {
 
     pub fn count(&self) -> usize {
         self.values.len()
+    }
+}
+
+impl Intersection<'_> {
+    pub fn prepare_computations(&self, ray: &Ray) -> IntersectionComputationData {
+        let t = self.intersection_t;
+        let object = self.object.clone();
+        let point = ray.position(t);
+        let eyev = -ray.direction;
+        let normalv = object.normal_at(&point);
+
+        IntersectionComputationData { t, object, point, eyev, normalv }
     }
 }
 

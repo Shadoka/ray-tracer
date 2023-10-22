@@ -1,5 +1,5 @@
 use super::*;
-use crate::sphere::Sphere;
+use crate::{sphere::Sphere, ray::ray, tuple::{point, vector}};
 
 #[test]
 fn test_intersection_add() {
@@ -117,4 +117,18 @@ fn test_intersections_hit4() {
             assert_eq!(hit.object.get_id(), obj_id);
         }
     }
+}
+
+#[test]
+fn test_prepare_computations() {
+    let ray = ray(&point(0.0, 0.0, -5.0), &vector(0.0, 0.0, 1.0));
+    let shape = Sphere::shape();
+    let i = intersection(4.0, &shape);
+    let comp_data = i.prepare_computations(&ray);
+
+    assert_eq!(comp_data.t, i.intersection_t);
+    assert_eq!(comp_data.object, i.object.clone());
+    assert_eq!(comp_data.point, point(0.0, 0.0, -1.0));
+    assert_eq!(comp_data.eyev, vector(0.0, 0.0, -1.0));
+    assert_eq!(comp_data.normalv, vector(0.0, 0.0, -1.0));
 }
