@@ -18,7 +18,8 @@ pub struct IntersectionComputationData {
     pub object: Shape,
     pub point: Tuple,
     pub eyev: Tuple,
-    pub normalv: Tuple
+    pub normalv: Tuple,
+    pub inside: bool
 }
 
 pub fn intersection(intersection: f64, o: &Shape) -> Intersection {
@@ -95,9 +96,15 @@ impl Intersection<'_> {
         let object = self.object.clone();
         let point = ray.position(t);
         let eyev = -ray.direction;
-        let normalv = object.normal_at(&point);
+        let mut normalv = object.normal_at(&point);
+        let mut inside = false;
 
-        IntersectionComputationData { t, object, point, eyev, normalv }
+        if normalv.dot(&eyev) < 0.0 {
+            inside = true;
+            normalv = -normalv;
+        }
+
+        IntersectionComputationData { t, object, point, eyev, normalv, inside }
     }
 }
 

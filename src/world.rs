@@ -1,4 +1,4 @@
-use crate::{shape::{Shape}, lights::{PointLight, point_light}, tuple::{point, color}, sphere::Sphere, material::material, matrix::scaling, ray::Ray, intersection::{Intersections, Intersection}};
+use crate::{shape::{Shape}, lights::{PointLight, point_light}, tuple::{point, color, Tuple}, sphere::Sphere, material::material, matrix::scaling, ray::Ray, intersection::{Intersections, Intersection, IntersectionComputationData}, phong_shader::lighting};
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct World {
@@ -62,6 +62,21 @@ impl World {
         xs.reverse();
         
         Intersections::convert_from_vector(xs)
+    }
+
+    pub fn shade_hit(&self, comp_data: &IntersectionComputationData) -> Tuple {
+        match self.light_source {
+            Some(light) => {
+                lighting(
+                    comp_data.object.get_material(), 
+                    &light, 
+                    &comp_data.point, 
+                    &comp_data.eyev, 
+                    &comp_data.normalv
+                )
+            },
+            None => panic!("world has no light source")
+        }
     }
 }
 

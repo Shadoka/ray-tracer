@@ -131,4 +131,20 @@ fn test_prepare_computations() {
     assert_eq!(comp_data.point, point(0.0, 0.0, -1.0));
     assert_eq!(comp_data.eyev, vector(0.0, 0.0, -1.0));
     assert_eq!(comp_data.normalv, vector(0.0, 0.0, -1.0));
+    assert_eq!(false, comp_data.inside);
+}
+
+#[test]
+fn test_prepare_computations_inside() {
+    let ray = ray(&point(0.0, 0.0, 0.0), &vector(0.0, 0.0, 1.0));
+    let shape = Sphere::shape();
+    let i = intersection(1.0, &shape);
+    let comp_data = i.prepare_computations(&ray);
+
+    assert_eq!(comp_data.t, i.intersection_t);
+    assert_eq!(comp_data.object, i.object.clone());
+    assert_eq!(comp_data.point, point(0.0, 0.0, 1.0));
+    assert_eq!(comp_data.eyev, vector(0.0, 0.0, -1.0));
+    assert_eq!(comp_data.normalv, vector(0.0, 0.0, -1.0));
+    assert_eq!(true, comp_data.inside);
 }

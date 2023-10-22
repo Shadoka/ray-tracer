@@ -1,4 +1,4 @@
-use crate::{ray::ray, tuple::vector};
+use crate::{ray::ray, tuple::vector, intersection::intersection, tuple::color};
 
 use super::*;
 
@@ -48,4 +48,37 @@ fn test_intersect_world() {
     assert_eq!(4.5, xs[1].intersection_t);
     assert_eq!(5.5, xs[2].intersection_t);
     assert_eq!(6.0, xs[3].intersection_t);
+}
+
+#[test]
+fn test_shade_hit() {
+    let w = default_world();
+    let ray = ray(&point(0.0, 0.0, -5.0), &vector(0.0, 0.0, 1.0));
+    let world_objects = w.get_objects();
+    let shape = world_objects[0].clone();
+    let i = intersection(4.0, &shape);
+
+    let comp_data = i.prepare_computations(&ray);
+    let actual_color = w.shade_hit(&comp_data);
+    let expected_color = color(0.38066, 0.47583, 0.2855);
+
+    assert_eq!(expected_color, actual_color);
+}
+
+#[test]
+fn test_shade_hit_inside() {
+    let mut w = default_world();
+    let light = point_light(&point(0.0, 0.25, 0.0), &color(1.0, 1.0, 1.0));
+    w.light_source = Some(light);
+
+    let ray = ray(&point(0.0, 0.0, 0.0), &vector(0.0, 0.0, 1.0));
+    let world_objects = w.get_objects();
+    let shape = world_objects[1].clone();
+    let i = intersection(0.5, &shape);
+
+    let comp_data = i.prepare_computations(&ray);
+    let actual_color = w.shade_hit(&comp_data);
+    let expected_color = color(0.90498, 0.90498, 0.90498);
+
+    assert_eq!(expected_color, actual_color);
 }
