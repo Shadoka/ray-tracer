@@ -1,4 +1,4 @@
-use crate::{shape::{Shape}, lights::{PointLight, point_light}, tuple::{point, color}, sphere::Sphere, material::material, matrix::scaling};
+use crate::{shape::{Shape}, lights::{PointLight, point_light}, tuple::{point, color}, sphere::Sphere, material::material, matrix::scaling, ray::Ray, intersection::{Intersections, Intersection}};
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct World {
@@ -49,6 +49,19 @@ impl World {
             Some(light) => Some(light.clone()),
             None => None
         }
+    }
+
+    pub fn intersect(&mut self, ray: &Ray) -> Intersections {
+        let mut xs: Vec<Intersection> = Vec::new();
+        for shape in self.objects.iter_mut() {
+            let mut obj_intersections = ray.intersect(shape);
+            xs.append(&mut obj_intersections);
+        }
+
+        xs.sort_by(|a, b| b.intersection_t.total_cmp(&a.intersection_t));
+        xs.reverse();
+        
+        Intersections::convert_from_vector(xs)
     }
 }
 

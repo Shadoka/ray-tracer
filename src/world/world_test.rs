@@ -1,3 +1,5 @@
+use crate::{ray::ray, tuple::vector};
+
 use super::*;
 
 #[test]
@@ -33,4 +35,17 @@ fn test_default_world() {
     assert_eq!(&expected_s1, actual_objects.get(0).unwrap());
     assert_eq!(&expected_s2, actual_objects.get(1).unwrap());
     assert_eq!(expected_light, w.get_light().unwrap())
+}
+
+#[test]
+fn test_intersect_world() {
+    let mut w = default_world();
+    let r = ray(&point(0.0, 0.0, -5.0), &vector(0.0, 0.0, 1.0));
+    let xs = w.intersect(&r);
+
+    assert_eq!(4, xs.count());
+    assert_eq!(4.0, xs[0].intersection_t);
+    assert_eq!(4.5, xs[1].intersection_t);
+    assert_eq!(5.5, xs[2].intersection_t);
+    assert_eq!(6.0, xs[3].intersection_t);
 }

@@ -75,6 +75,10 @@ impl <'a> Intersections<'_> {
         }
         return result;
     }
+
+    pub fn count(&self) -> usize {
+        self.values.len()
+    }
 }
 
 #[cfg(test)]
