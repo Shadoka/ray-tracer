@@ -13,6 +13,7 @@ mod lights;
 mod material;
 mod phong_shader;
 mod world;
+mod transformations;
 
 struct A {
   text: String

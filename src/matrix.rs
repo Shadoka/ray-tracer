@@ -20,7 +20,7 @@ pub struct Matrix4 {
 
 // const
 
-const IDENTITY: Matrix4 = Matrix4 {values: [
+pub const IDENTITY: Matrix4 = Matrix4 {values: [
   [1.0, 0.0, 0.0, 0.0],
   [0.0, 1.0, 0.0, 0.0],
   [0.0, 0.0, 1.0, 0.0],
