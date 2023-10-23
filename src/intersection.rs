@@ -88,6 +88,19 @@ impl <'a> Intersections<'_> {
     pub fn count(&self) -> usize {
         self.values.len()
     }
+
+    pub fn first_positive_hit_index(&self) -> i32 {
+        let mut index: i32 = -1;
+        let mut lowest_value = f64::MAX;
+        for n in 0..self.values.len() {
+            let intersection = &self.values[n];
+            if intersection.intersection_t < lowest_value && intersection.intersection_t >= 0.0 {
+                lowest_value = intersection.intersection_t;
+                index = n as i32;
+            }
+        }
+        return index;
+    }
 }
 
 impl Intersection<'_> {

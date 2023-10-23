@@ -82,3 +82,48 @@ fn test_shade_hit_inside() {
 
     assert_eq!(expected_color, actual_color);
 }
+
+#[test]
+fn test_color_at_ray_miss() {
+    let mut w = default_world();
+    let ray = ray(&point(0.0, 0.0, -5.0), &vector(0.0, 1.0, 0.0));
+
+    let actual_color = w.color_at(&ray);
+    let expected_color = color(0.0, 0.0, 0.0);
+
+    assert_eq!(expected_color, actual_color);
+}
+
+#[test]
+fn test_color_at_ray_hit() {
+    let mut w = default_world();
+    let ray = ray(&point(0.0, 0.0, -5.0), &vector(0.0, 0.0, 1.0));
+
+    let actual_color = w.color_at(&ray);
+    let expected_color = color(0.38066, 0.47583, 0.2855);
+
+    assert_eq!(expected_color, actual_color);
+}
+
+#[test]
+fn test_color_at_ray_inner_hit() {
+    let mut w = default_world();
+
+    let mut objects = w.get_objects();
+    let mut outer_material = objects[0].get_material().clone();
+    outer_material.ambient = 1.0;
+    objects[0].set_material(&outer_material);
+
+    let mut inner_material = objects[1].get_material().clone();
+    inner_material.ambient = 1.0;
+    objects[1].set_material(&inner_material);
+    let expected_color = inner_material.color;
+
+    w.set_objects(objects);
+
+    let ray = ray(&point(0.0, 0.0, 0.75), &vector(0.0, 0.0, -1.0));
+
+    let actual_color = w.color_at(&ray);
+
+    assert_eq!(expected_color, actual_color);
+}

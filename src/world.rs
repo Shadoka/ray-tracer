@@ -44,6 +44,10 @@ impl World {
         self.objects.clone()
     }
 
+    pub fn set_objects(&mut self, shapes: Vec<Shape>) {
+        self.objects = shapes
+    }
+
     pub fn get_light(&self) -> Option<PointLight> {
         match self.light_source {
             Some(light) => Some(light.clone()),
@@ -77,6 +81,17 @@ impl World {
             },
             None => panic!("world has no light source")
         }
+    }
+
+    pub fn color_at(&mut self, ray: &Ray) -> Tuple {
+        let xs = self.intersect(ray);
+        let hit_index = xs.first_positive_hit_index();
+        if hit_index == -1 {
+            return color(0.0, 0.0, 0.0);
+        }
+
+        let comp_data = xs[hit_index as usize].prepare_computations(ray);
+        return self.shade_hit(&comp_data);
     }
 }
 
